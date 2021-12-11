@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 940fce1990054a9db2059f8d0a16669f, type: 3}
+  m_Name: SmallAsteroid
+  m_EditorClassIdentifier: 
+  AsteroidBehaviour: {fileID: 8681130693293861265, guid: b7c67ae6ed48255469828a2e86aa0941,
+    type: 3}
+  AsteroidMovementSpeed: 2
+  AsteroidHealth: 1
+  AsteroidScore: 100
