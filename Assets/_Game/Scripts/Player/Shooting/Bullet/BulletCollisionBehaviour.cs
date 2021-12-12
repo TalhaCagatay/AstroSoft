@@ -10,7 +10,8 @@ namespace _Game.Scripts.Player.Shooting.Bullet
             if(other.TryGetComponent(out IDamageable damageable))
             {
                 damageable.ApplyDamage(other.ClosestPoint(transform.position));
-                LeanPool.Despawn(gameObject);
+                if(!other.CompareTag("Player"))
+                    LeanPool.Despawn(gameObject);
             }
         }
     }
