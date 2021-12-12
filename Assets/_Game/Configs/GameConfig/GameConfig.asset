@@ -16,4 +16,6 @@ MonoBehaviour:
   PlayerRespawnTime: 2
   AsteroidSpawnFrequencyInSeconds: 3
   AsteroidDivisionCountUponDestroyed: 2
+  MaxAmountOfAsteroids: 15
   ShipMaxLiveCount: 3
+  SoundVolume: 0.5

@@ -78,7 +78,7 @@ namespace _Game.Scripts.Game.Controllers
             _spawnedAsteroids.Clear();
         }
         
-        private void StartSpawningCoroutine() => _asteroidSpawnRoutine = StartCoroutine(StartAsteroidSpawning());
+        private void StartSpawningCoroutine() => _asteroidSpawnRoutine = StartCoroutine(AsteroidSpawningCoroutine());
 
         private void StopSpawningCoroutine()
         {
@@ -94,12 +94,16 @@ namespace _Game.Scripts.Game.Controllers
             _diameter = Mathf.Sqrt(sumOfSquares);
         }
 
-        private IEnumerator StartAsteroidSpawning()
+        private IEnumerator AsteroidSpawningCoroutine()
         {
             while (true)
             {
-                var spawnPosition = CalculateRandomSpawnPosition();
-                SpawnAsteroid(spawnPosition).AsteroidDivided += OnAsteroidDivided;
+                if (_spawnedAsteroids.Count < GameController.Instance.GameConfig.MaxAmountOfAsteroids)
+                {
+                    var spawnPosition = CalculateRandomSpawnPosition();
+                    SpawnAsteroid(spawnPosition).AsteroidDivided += OnAsteroidDivided;    
+                }
+                
                 yield return new WaitForSeconds(GameController.Instance.GameConfig.AsteroidSpawnFrequencyInSeconds);
             }
         }
