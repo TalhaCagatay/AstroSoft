@@ -47,7 +47,7 @@ namespace _Game.Scripts.Game.Controllers
             GameController.Instance.StateChanged += OnStateChanged;
         }
 
-        private void GetInitialShipPosition() => _initialShipPosition = _transformToMove.position;
+        private void GetInitialShipPosition() => _initialShipPosition = _transformToMove.localPosition;
 
         private void InitializePlayerDependencies()
         {
@@ -74,7 +74,7 @@ namespace _Game.Scripts.Game.Controllers
 
         private void ResetShipRotation() => _transformToMove.rotation = Quaternion.identity;
 
-        private void ResetShipPosition() => _transformToMove.position = _initialShipPosition;
+        private void ResetShipPosition() => _transformToMove.localPosition = _initialShipPosition;
 
         private void EnableShip()
         {

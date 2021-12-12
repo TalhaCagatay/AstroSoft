@@ -1,4 +1,5 @@
-﻿using _Game.Scripts.Configs.MovementConfig;
+﻿using System;
+using _Game.Scripts.Configs.MovementConfig;
 using _Game.Scripts.Game.Controllers;
 using _Game.Scripts.Helpers;
 using UnityEngine;
@@ -26,6 +27,8 @@ namespace _Game.Scripts.Player.Movement
         }
 
         public void Dispose() => ResetShipVelocity();
+
+        private void OnDisable() => _isThrusting = false;
 
         public void ResetShipVelocity() => _shipRigidbody2D.velocity = Vector2.zero;
 
