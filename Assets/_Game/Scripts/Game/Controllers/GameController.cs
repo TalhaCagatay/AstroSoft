@@ -1,5 +1,6 @@
 ﻿using System;
-using _Game.Scripts.Game.Configs;
+using _Game.Scripts.Configs.GameConfig;
+using _Game.Scripts.Initializations;
 using Lean.Pool;
 using UnityEngine;
 
@@ -44,7 +45,12 @@ namespace _Game.Scripts.Game.Controllers
         [SerializeField] private ViewController _viewController;
         [SerializeField] private PlayerController _playerController;
         [SerializeField] private AsteroidsController _asteroidsController;
-
+        [SerializeField] private SoundController _soundController;
+        [SerializeField] private ParticleController _particleController;
+        [SerializeField] private GameConfig _gameConfig;
+        [SerializeField] private GameConfigMono _gameConfigMono;
+        [SerializeField] private InitStep _mainInitStep;
+        
         private bool _isInitialized;
         private GameState _gameState;
 
@@ -53,31 +59,53 @@ namespace _Game.Scripts.Game.Controllers
         public IPrefsController PrefsController { get; set; }
         public IViewController ViewController => _viewController;
         public IAsteroidController AsteroidController => _asteroidsController;
+        public ISoundController SoundController => _soundController;
+        public IParticleController ParticleController => _particleController;
+        public GameConfig GameConfig => _gameConfig;
+        public GameConfigMono GameConfigMono => _gameConfigMono;
 
         public bool IsInitialized => _isInitialized;
         public void Init()
         {
-            Application.targetFrameRate = 60;
-            Debug.unityLogger.logEnabled = true;
-            
-            PrefsController = new PrefsController();
-            PlayerController = LeanPool.Spawn(_playerController, GameConfig.Instance.LevelParent);
-            
-            PrefsController.Init();
-            ViewController.Init();
-            PlayerController.Init();
-            AsteroidController.Init();
+            CreatePlayer();
+            SubscribeGameControllerDependencies();
+            InitializeInitSteps();
+        }
 
+        private void InitializeInitSteps()
+        {
+            _mainInitStep.Initialized += OnInitialized;
+            _mainInitStep.Run();
+        }
+
+        private void CreatePlayer()
+        {
+            PlayerController = LeanPool.Spawn(_playerController, GameConfigMono.LevelParent);
+        }
+
+        private void OnInitialized()
+        {
+            _mainInitStep.Initialized -= OnInitialized;
+            _isInitialized = true;
+            Initialized?.Invoke();
+            Debug.Log($"{LOGS.HEAD_LOG} {this} Initialized");
+            ChangeState(GameState.Menu);
+        }
+
+        private void SubscribeGameControllerDependencies()
+        {
             ViewController.StartClicked += OnStartClicked;
             ViewController.RetryClicked += OnRetryClicked;
             ViewController.ExitClicked += OnExitClicked;
             PlayerController.PlayerDied += OnPlayerDied;
-            
-            _isInitialized = true;
-            Initialized?.Invoke();
-            Debug.Log($"{LOGS.HEAD_LOG} {this} Initialized");
-            
-            ChangeState(GameState.Menu);
+        }
+        
+        private void UnSubscribeGameControllerDependencies()
+        {
+            ViewController.StartClicked -= OnStartClicked;
+            ViewController.RetryClicked -= OnRetryClicked;
+            ViewController.ExitClicked -= OnExitClicked;
+            PlayerController.PlayerDied -= OnPlayerDied;
         }
 
         private void OnExitClicked() => ChangeState(GameState.Menu);
@@ -85,16 +113,6 @@ namespace _Game.Scripts.Game.Controllers
         private void OnRetryClicked() => ChangeState(GameState.Play);
 
         private void OnPlayerDied() => ChangeState(GameState.Failed);
-
-        public void OnContinueClicked() => ReturnToMenu();
-
-        public void OnMultiplierClicked() => ReturnToMenu();
-
-        private void ReturnToMenu()
-        {
-            Debug.Log($"{LOGS.HEAD_LOG} Returning to menu");
-            ChangeState(GameState.Menu);
-        }
 
         private void OnStartClicked() => ChangeState(GameState.Play);
 
@@ -108,10 +126,10 @@ namespace _Game.Scripts.Game.Controllers
         {
             PrefsController.Dispose();
             ViewController.Dispose();
+            PlayerController.Dispose();
+            AsteroidController.Dispose();
 
-            ViewController.StartClicked -= OnStartClicked;
-            ViewController.RetryClicked -= OnRetryClicked;
-            PlayerController.PlayerDied -= OnPlayerDied;
+            UnSubscribeGameControllerDependencies();
             
             _isInitialized = false;
             Disposed?.Invoke();

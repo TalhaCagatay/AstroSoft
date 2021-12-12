@@ -2,7 +2,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace _DogWalker.Scripts.Helpers
+namespace _Game.Scripts.Helpers
 {
     public class EasyRotate : MonoBehaviour
     {
@@ -13,6 +13,6 @@ namespace _DogWalker.Scripts.Helpers
         [SerializeField] private float _durationMin = 1f;
         [SerializeField] private float _durationMax = 10f;
 
-        private void OnEnable() => transform.DORotate(_rotationEndValue, Random.Range(_durationMin, _durationMax)).SetLoops(-1, _loopType).SetRelative().SetEase(_ease);
+        private void OnEnable() => transform.DORotate(_rotationEndValue, Random.Range(_durationMin, _durationMax)).SetLoops(_loopAmount, _loopType).SetRelative().SetEase(_ease);
     }
 }

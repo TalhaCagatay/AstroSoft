@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ThrustSpeed: 3
   RotationSpeed: 250
+  ThrustAcceleration: 13.55
+  ThrustDeacceleration: 1
+  MaxSpeed: 3

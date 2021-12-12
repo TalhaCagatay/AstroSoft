@@ -7,7 +7,7 @@ namespace _Game.Scripts.Asteroid
 {
     public class AsteroidBehaviour : MonoBehaviour, IAsteroid
     {
-        public static event Action<int> AsteroidDestroyed;
+        public static event Action<int, Vector2> AsteroidDestroyed;
         public event Action<IAsteroid, Vector2> AsteroidDivided;
         
         [SerializeField] private AsteroidMovementBehaviour _asteroidMovementBehaviour;
@@ -32,7 +32,7 @@ namespace _Game.Scripts.Asteroid
         {
             _health--;
             AsteroidDivided?.Invoke(this, damagePoint);
-            AsteroidDestroyed?.Invoke(_asteroidScore);
+            AsteroidDestroyed?.Invoke(_asteroidScore, damagePoint);
             LeanPool.Despawn(gameObject);
         }
     }

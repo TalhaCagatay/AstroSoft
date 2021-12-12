@@ -4,6 +4,10 @@ using UnityEngine.Assertions;
 
 namespace _Game.Scripts.Helpers
 {
+    /// <summary>
+    /// This class is responsible of handling objects when they cross the edges of the screen.
+    /// Any object which is added to _transformToHandle list will be handled automatically
+    /// </summary>
     public class ScreenEdgePositionHelper : MonoBehaviour
     {
         [SerializeField] private Camera _mainCamera;

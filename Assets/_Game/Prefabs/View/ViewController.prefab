@@ -239,11 +239,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameplayView
       objectReference: {fileID: 0}
-    - target: {fileID: 6673870400041931324, guid: cdc31f9de82f11f4aa9d4687611f2ca8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6673870400041931327, guid: cdc31f9de82f11f4aa9d4687611f2ca8,
         type: 3}
       propertyPath: m_Pivot.x
@@ -512,11 +507,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelFailView
       objectReference: {fileID: 0}
-    - target: {fileID: 884459007304998492, guid: 0689f89375864714290043ad08b95ff4,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 884459007304998495, guid: 0689f89375864714290043ad08b95ff4,
         type: 3}
       propertyPath: m_Pivot.x
@@ -758,11 +748,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: LevelCompletedView
-      objectReference: {fileID: 0}
-    - target: {fileID: 1749786079374694543, guid: 4312137da385a7149b6a2fe687fe7653,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4312137da385a7149b6a2fe687fe7653, type: 3}

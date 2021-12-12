@@ -1,9 +1,5 @@
 using System;
-using _Game.Scripts.Game.Levels;
-using DG.Tweening;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace _Game.Scripts.Game.Views
 {
@@ -13,7 +9,6 @@ namespace _Game.Scripts.Game.Views
         public event Action<IView> ViewClosed;
 
         
-        public ILevel Level { get; set; }
         public void Init(){}
         
         public void Open()

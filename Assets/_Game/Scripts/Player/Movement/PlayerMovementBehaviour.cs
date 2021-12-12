@@ -2,28 +2,34 @@
 using _Game.Scripts.Game.Controllers;
 using _Game.Scripts.Helpers;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Vector3 = UnityEngine.Vector3;
 
 namespace _Game.Scripts.Player.Movement
 {
     public class PlayerMovementBehaviour : MonoBehaviour, IMovement
     {
-        private Transform _transformToHandleMovement;
-
         [SerializeField] private InertiaMovementConfig _inertiaMovementConfig;
-
+        
+        private Transform _transformToHandleMovement;
+        private Rigidbody2D _shipRigidbody2D;
+        private bool _isThrusting;
+        
         public MovementConfig MovementConfig => _inertiaMovementConfig;
         public float ThrustSpeed => MovementConfig.ThrustSpeed;
         public float RotationSpeed => MovementConfig.RotationSpeed;
         
-        private void Awake() => Assert.IsNotNull(_inertiaMovementConfig);
-
         public void Init()
         {
             PositionPlayerAtCenter();
             GetTransformToHandle();
+            GetShipRigidbody2D();
         }
+
+        public void Dispose() => ResetShipVelocity();
+
+        public void ResetShipVelocity() => _shipRigidbody2D.velocity = Vector2.zero;
+
+        private void GetShipRigidbody2D() => _shipRigidbody2D = ((PlayerController) GameController.Instance.PlayerController).ShipRigidbody2D;
 
         private void GetTransformToHandle() => _transformToHandleMovement = ((PlayerController) GameController.Instance.PlayerController).TransformToMove;
 
@@ -32,21 +38,45 @@ namespace _Game.Scripts.Player.Movement
         private void Update()
         {
             Rotate();
-            Thrust();
+            _isThrusting = IsThrusting();
+        }
+
+        private void FixedUpdate()
+        {
+            if (!_isThrusting)
+                _shipRigidbody2D.drag = _inertiaMovementConfig.ThrustDeacceleration;
+            else
+                Thrust();
+        }
+
+        private bool IsThrusting()
+        {
+#if UNITY_EDITOR
+            return Input.GetKey(KeyCode.UpArrow);
+#else
+            return TouchHelper.JoyStickVector.y > 0f;
+#endif
+
         }
 
         public void Rotate()
         {
-            if (TouchHelper.SwipeMoveDirection == TouchHelper.SwipeDirection.Left)
+#if UNITY_EDITOR
+            if (InputHelper.SwipeMoveDirection == InputHelper.SwipeDirection.Left)
                 _transformToHandleMovement.Rotate(Vector3.forward * (RotationSpeed * Time.deltaTime), Space.Self);
-            if (TouchHelper.SwipeMoveDirection == TouchHelper.SwipeDirection.Right)
-                _transformToHandleMovement.Rotate(Vector3.forward * (-RotationSpeed * Time.deltaTime), Space.Self);
+            if (InputHelper.SwipeMoveDirection == InputHelper.SwipeDirection.Right)
+                _transformToHandleMovement.Rotate(Vector3.forward * (-RotationSpeed * Time.deltaTime), Space.Self);      
+#else
+            _transformToHandleMovement.Rotate(Vector3.forward * (-TouchHelper.JoyStickVector.x * (RotationSpeed * Time.deltaTime)), Space.Self);
+#endif
+            
         }
 
         public void Thrust()
         {
-            if (Input.GetKey(KeyCode.UpArrow))
-                _transformToHandleMovement.Translate(Vector3.up * (ThrustSpeed * Time.deltaTime),Space.Self);
+            _shipRigidbody2D.drag = 0f;
+            _shipRigidbody2D.AddForce(_transformToHandleMovement.up * _inertiaMovementConfig.ThrustAcceleration, ForceMode2D.Force);
+            _shipRigidbody2D.velocity = Vector2.ClampMagnitude(_shipRigidbody2D.velocity, _inertiaMovementConfig.MaxSpeed);
         }
     }
 }

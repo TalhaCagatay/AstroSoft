@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AsteroidBehaviour: {fileID: 8681130693293861265, guid: b7c67ae6ed48255469828a2e86aa0941,
     type: 3}
+  DividedAsteroidConfig: {fileID: 0}
   AsteroidMovementSpeed: 2
   AsteroidHealth: 1
   AsteroidScore: 100

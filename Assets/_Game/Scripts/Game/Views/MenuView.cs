@@ -1,6 +1,5 @@
 using System;
 using _Game.Scripts.Game.Controllers;
-using _Game.Scripts.Game.Levels;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,20 +15,22 @@ namespace _Game.Scripts.Game.Views
         [SerializeField] private Button _startButton;
         [SerializeField] private TextMeshProUGUI _highScoreText;
         
-        public ILevel Level { get; set; }
-
         public void Init()
         {
-            _startButton.onClick.AddListener(OnStartClicked);
-            GameController.Instance.PrefsController.HighScoreChanged += OnHighScoreChanged;
+            SetButtonListeners();
+            SubscribeToEvents();
             SetHighScoreText(GameController.Instance.PrefsController.GetHighScore());
         }
+
+        private void SubscribeToEvents() => GameController.Instance.PrefsController.HighScoreChanged += OnHighScoreChanged;
+
+        private void SetButtonListeners() => _startButton.onClick.AddListener(OnStartClicked);
 
         private void OnHighScoreChanged(int newHighScore) => SetHighScoreText(newHighScore);
 
         private void SetHighScoreText(int newHighScore) => _highScoreText.text = $"High Score : {newHighScore}";
 
-        protected void OnStartClicked() => StartClicked?.Invoke();
+        private void OnStartClicked() => StartClicked?.Invoke();
 
         public void Open()
         {

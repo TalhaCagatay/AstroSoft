@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2339432142398308612}
-  - component: {fileID: 2339432142398308635}
+  - component: {fileID: 1206964866}
   m_Layer: 0
   m_Name: GameConfig
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2339432142398308635
+--- !u!114 &1206964866
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,13 +40,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2339432142398308613}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d006ccafdde4e03b6bdfb6a2c1c9835, type: 3}
+  m_Script: {fileID: 11500000, guid: a9e4f6d04e81412584a9a41e1bd116c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levelParent: {fileID: 0}
-  _bulletsParent: {fileID: 0}
-  _asteroidsParent: {fileID: 0}
-  _mainCamera: {fileID: 0}
-  _despawnAfterSeconds: 3
-  _playerRespawnTime: 2
-  _shipMaxLiveCount: 3
+  LevelParent: {fileID: 0}
+  BulletsParent: {fileID: 0}
+  AsteroidsParent: {fileID: 0}
+  SoundsParent: {fileID: 0}
+  ParticlesParent: {fileID: 0}
+  MainCamera: {fileID: 0}

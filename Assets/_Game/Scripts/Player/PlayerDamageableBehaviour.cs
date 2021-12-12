@@ -11,6 +11,7 @@ namespace _Game.Scripts.Player
         public int Health => _health;
 
         public void Init(int health) => _health = health;
+        public void Dispose(){}
 
         public void ApplyDamage(Vector2 damagePoint)
         {
@@ -27,10 +28,7 @@ namespace _Game.Scripts.Player
         private void OnTriggerEnter2D(Collider2D other)
         {
             if(other.TryGetComponent(out IDamageable damageable))
-            {
-                damageable.ApplyDamage(other.ClosestPoint(transform.position));
                 ApplyDamage();
-            }
         }
     }
 }

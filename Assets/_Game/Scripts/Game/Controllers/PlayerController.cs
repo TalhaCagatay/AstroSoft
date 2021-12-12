@@ -1,6 +1,4 @@
 ﻿using System;
-using _Game.Scripts.Asteroid;
-using _Game.Scripts.Game.Configs;
 using _Game.Scripts.Player;
 using _Game.Scripts.Player.Movement;
 using _Game.Scripts.Player.Shooting;
@@ -11,6 +9,7 @@ namespace _Game.Scripts.Game.Controllers
 {
     public class PlayerController : MonoBehaviour, IPlayerController
     {
+        public static event Action ShipRespawned;
         public event Action<int> PlayerLostLive;
         public event Action PlayerDied;
         
@@ -18,7 +17,7 @@ namespace _Game.Scripts.Game.Controllers
         public event Action Disposed;
 
         [SerializeField] private Transform _transformToMove;
-        [SerializeField] private SpriteRenderer _shipSpriteRenderer;
+        [SerializeField] private Rigidbody2D _shipRigidbody2D;
         [SerializeField] private PlayerMovementBehaviour _playerMovementBehaviour;
         [SerializeField] private PlayerShootBehaviour _playerShootBehaviour;
         [SerializeField] private PlayerDamageableBehaviour _playerDamageableBehaviour;
@@ -27,7 +26,7 @@ namespace _Game.Scripts.Game.Controllers
         private Vector2 _initialShipPosition;
         private bool _isInitialized;
         public Transform TransformToMove => _transformToMove;
-        public SpriteRenderer ShipSpriteRenderer => _shipSpriteRenderer;
+        public Rigidbody2D ShipRigidbody2D => _shipRigidbody2D;
         public bool IsInitialized => _isInitialized;
         
         public void Init()
@@ -54,14 +53,24 @@ namespace _Game.Scripts.Game.Controllers
         {
             _playerScoreBehaviour.Init();
             _playerMovementBehaviour.Init();
-            _playerDamageableBehaviour.Init(GameConfig.Instance.ShipMaxLiveCount);
+            _playerDamageableBehaviour.Init(GameController.Instance.GameConfig.ShipMaxLiveCount);
+        }
+        
+        private void DisposePlayerDependencies()
+        {
+            _playerScoreBehaviour.Dispose();
+            _playerMovementBehaviour.Dispose();
+            _playerDamageableBehaviour.Dispose();
         }
 
         private void ResetShip()
         {
+            ResetShipVelocity();
             ResetShipPosition();
             ResetShipRotation();
         }
+
+        private void ResetShipVelocity() => _playerMovementBehaviour.ResetShipVelocity();
 
         private void ResetShipRotation() => _transformToMove.rotation = Quaternion.identity;
 
@@ -90,15 +99,24 @@ namespace _Game.Scripts.Game.Controllers
             if(remainingLives <= 0)
                 PlayerDied?.Invoke();
             else
-                Invoke("RespawnPlayer", GameConfig.Instance.PlayerRespawnTime);
+                Invoke("RespawnPlayer", GameController.Instance.GameConfig.PlayerRespawnTime);
         }
 
-        private void RespawnPlayer() => EnableShip();
+        private void RespawnPlayer()
+        {
+            EnableShip();
+            ShipRespawned?.Invoke();
+        }
         
         private void OnStateChanged(GameState newState)
         {
             if (newState == GameState.Play)
+            {
                 EnableShip();
+                InitializePlayerDependencies();
+            }
+            if(newState == GameState.Completed || newState == GameState.Failed)
+                DisposePlayerDependencies();
         }
 
         public void Dispose()

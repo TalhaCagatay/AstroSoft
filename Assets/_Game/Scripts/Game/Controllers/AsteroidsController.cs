@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using _Game.Scripts.Asteroid;
 using _Game.Scripts.Configs.AsteroidConfig;
-using _Game.Scripts.Game.Configs;
 using Lean.Pool;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -21,6 +20,7 @@ namespace _Game.Scripts.Game.Controllers
         private Coroutine _asteroidSpawnRoutine;
         private bool _isInitialized;
         private float _diameter;
+        private DeviceOrientation _deviceOrientation;
 
         public bool IsInitialized => _isInitialized;
         public void Init()
@@ -28,8 +28,23 @@ namespace _Game.Scripts.Game.Controllers
             GameController.Instance.PlayerController.PlayerLostLive += OnPlayerLostLive;
             CalculateDiameterForSpawningOutsideCamera();
             GameController.Instance.StateChanged += OnStateChanged;
+            _deviceOrientation = Input.deviceOrientation;
             _isInitialized = true;
             Initialized?.Invoke();
+        }
+
+        private void Update()
+        {
+            if (IsOrientationChanged())
+                ChangeOrientationAndReset();
+        }
+
+        private bool IsOrientationChanged() => _deviceOrientation != Input.deviceOrientation;
+
+        private void ChangeOrientationAndReset()
+        {
+            _deviceOrientation = Input.deviceOrientation;
+            CalculateDiameterForSpawningOutsideCamera();
         }
 
         private void OnPlayerLostLive(int remainingLive)
@@ -38,7 +53,7 @@ namespace _Game.Scripts.Game.Controllers
             if (remainingLive > 0)
             {
                 StopSpawningCoroutine();
-                Invoke("StartSpawningCoroutine", GameConfig.Instance.PlayerRespawnTime);
+                Invoke("StartSpawningCoroutine", GameController.Instance.GameConfig.PlayerRespawnTime);
             }
             else
                 StopSpawningCoroutine();
@@ -57,7 +72,7 @@ namespace _Game.Scripts.Game.Controllers
             for (var i = 0; i < _spawnedAsteroids.Count; i++)
             {
                 _spawnedAsteroids[i].AsteroidDivided -= OnAsteroidDivided;
-                LeanPool.Despawn(_spawnedAsteroids[i]);
+                LeanPool.Despawn(_spawnedAsteroids[i].gameObject);
             }
             
             _spawnedAsteroids.Clear();
@@ -73,8 +88,8 @@ namespace _Game.Scripts.Game.Controllers
 
         private void CalculateDiameterForSpawningOutsideCamera()
         {
-            var cameraHeight = GameConfig.Instance.MainCamera.orthographicSize;
-            var cameraWidth = GameConfig.Instance.MainCamera.orthographicSize * GameConfig.Instance.MainCamera.aspect;
+            var cameraHeight = GameController.Instance.GameConfigMono.MainCamera.orthographicSize;
+            var cameraWidth = GameController.Instance.GameConfigMono.MainCamera.orthographicSize * GameController.Instance.GameConfigMono.MainCamera.aspect;
             var sumOfSquares = Mathf.Pow(cameraHeight, 2) + Mathf.Pow(cameraWidth, 2);
             _diameter = Mathf.Sqrt(sumOfSquares);
         }
@@ -85,15 +100,16 @@ namespace _Game.Scripts.Game.Controllers
             {
                 var spawnPosition = CalculateRandomSpawnPosition();
                 SpawnAsteroid(spawnPosition).AsteroidDivided += OnAsteroidDivided;
-                yield return new WaitForSeconds(3f);
+                yield return new WaitForSeconds(GameController.Instance.GameConfig.AsteroidSpawnFrequencyInSeconds);
             }
         }
 
         private void OnAsteroidDivided(IAsteroid asteroid, Vector2 damagePosition)
         {
             asteroid.AsteroidDivided -= OnAsteroidDivided;
+            _spawnedAsteroids.Remove((AsteroidBehaviour) asteroid);
             if (asteroid.Health < 1) return;
-            for (var i = 0; i < 2; i++)
+            for (var i = 0; i < GameController.Instance.GameConfig.AsteroidDivisionCountUponDestroyed; i++)
             {
                 var movementDirection = Random.insideUnitCircle.normalized;
                 SpawnAsteroid(asteroid.AsteroidConfig.DividedAsteroidConfig, asteroid.AsteroidTransform.position, movementDirection, asteroid.Health).AsteroidDivided += OnAsteroidDivided;
@@ -105,7 +121,7 @@ namespace _Game.Scripts.Game.Controllers
         private AsteroidBehaviour SpawnAsteroid(Vector2 positionToSpawn)
         {
             var asteroidMovementDirection = Vector2.zero - positionToSpawn;
-            var asteroidBehaviour = LeanPool.Spawn(_asteroidConfig.AsteroidBehaviour, positionToSpawn, Quaternion.identity, GameConfig.Instance.AsteroidsParent);
+            var asteroidBehaviour = LeanPool.Spawn(_asteroidConfig.AsteroidBehaviour, positionToSpawn, Quaternion.identity, GameController.Instance.GameConfigMono.AsteroidsParent);
             asteroidBehaviour.Init(_asteroidConfig, asteroidMovementDirection, _asteroidConfig.AsteroidHealth);
             _spawnedAsteroids.Add(asteroidBehaviour);
             return asteroidBehaviour;
@@ -113,7 +129,7 @@ namespace _Game.Scripts.Game.Controllers
         
         private AsteroidBehaviour SpawnAsteroid(AsteroidConfig asteroidConfig, Vector2 positionToSpawn, Vector2 movementDirection, int health)
         {
-            var asteroidBehaviour = LeanPool.Spawn(asteroidConfig.AsteroidBehaviour, positionToSpawn, Quaternion.identity, GameConfig.Instance.AsteroidsParent);
+            var asteroidBehaviour = LeanPool.Spawn(asteroidConfig.AsteroidBehaviour, positionToSpawn, Quaternion.identity, GameController.Instance.GameConfigMono.AsteroidsParent);
             asteroidBehaviour.Init(asteroidConfig, movementDirection, health);
             _spawnedAsteroids.Add(asteroidBehaviour);
             return asteroidBehaviour;

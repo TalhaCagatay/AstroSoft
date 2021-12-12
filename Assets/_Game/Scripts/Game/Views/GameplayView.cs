@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using _Game.Scripts.Asteroid;
-using _Game.Scripts.Game.Configs;
 using _Game.Scripts.Game.Controllers;
-using _Game.Scripts.Game.Levels;
 using _Game.Scripts.Player;
 using TMPro;
 using UnityEngine;
@@ -22,13 +19,16 @@ namespace _Game.Scripts.Game.Views
 
         private List<Image> _shipLiveImages = new List<Image>();
         
-        public ILevel Level { get; set; }
-
         public void Init()
+        {
+            SubscribeEvents();
+            ResetScore();
+        }
+
+        private void SubscribeEvents()
         {
             GameController.Instance.StateChanged += OnStateChanged;
             GameController.Instance.PlayerController.PlayerLostLive += OnPlayerLostLive;
-            ResetScore();
         }
 
         private void OnStateChanged(GameState newState)
@@ -39,7 +39,7 @@ namespace _Game.Scripts.Game.Views
 
         private void InstantiateInitialShipLives()
         {
-            for (var i = 0; i < GameConfig.Instance.ShipMaxLiveCount; i++)
+            for (var i = 0; i < GameController.Instance.GameConfig.ShipMaxLiveCount; i++)
                 _shipLiveImages.Add(Instantiate(_shipLiveImage, _shipLivesContainer));
         }
 

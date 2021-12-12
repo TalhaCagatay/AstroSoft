@@ -1,13 +1,32 @@
 {
-    "m_SelectedDeviceId": "",
+    "m_SelectedDeviceId": "5203f9aac0ef74ed",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "5203f9aac0ef74ed",
+        "name": "com.DefaultCompany.AstroSoft",
+        "processId": 7200,
         "exited": false
     },
     "m_SelectedPriority": 0,
-    "m_KnownPackagesForSerialization": [],
+    "m_KnownPackagesForSerialization": [
+        {
+            "deviceId": "5203f9aac0ef74ed",
+            "name": "com.DefaultCompany.AstroSoft",
+            "processId": 5677,
+            "exited": true
+        },
+        {
+            "deviceId": "5203f9aac0ef74ed",
+            "name": "com.sec.android.app.launcher",
+            "processId": 30791,
+            "exited": false
+        },
+        {
+            "deviceId": "5203f9aac0ef74ed",
+            "name": "com.DefaultCompany.AstroSoft",
+            "processId": 7200,
+            "exited": false
+        }
+    ],
     "m_Tags": {
         "m_Entries": [
             {
@@ -41,9 +60,20 @@
         ]
     },
     "m_MemoryViewerState": {
-        "MemoryWindowHeight": 0.0,
-        "MemoryWindowWidth": 0.0,
-        "MemoryTypeEnabled": [],
+        "MemoryWindowHeight": 300.0,
+        "MemoryWindowWidth": 170.0,
+        "MemoryTypeEnabled": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+        ],
         "MemoryGroup": 2,
         "Behavior": 0
     },

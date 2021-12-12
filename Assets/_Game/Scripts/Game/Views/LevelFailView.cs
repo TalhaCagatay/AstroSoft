@@ -1,8 +1,6 @@
 ﻿using System;
 using _Game.Scripts.Game.Controllers;
-using _Game.Scripts.Game.Levels;
 using _Game.Scripts.Player;
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,9 +19,9 @@ namespace _Game.Scripts.Game.Views
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _exitButton;
         
-        public ILevel Level { get; set; }
+        public void Init() => SetButtonListeners();
 
-        public void Init()
+        private void SetButtonListeners()
         {
             _restartButton.onClick.AddListener(OnRestartClicked);
             _exitButton.onClick.AddListener(OnExitClicked);
@@ -35,10 +33,15 @@ namespace _Game.Scripts.Game.Views
 
         public void Open()
         {
-            _currentScoreText.text = $"Current Score : {PlayerScoreBehaviour.CurrentScore}";
-            _highScoreText.text = $"Current Score : {GameController.Instance.PrefsController.GetHighScore()}";
+            SetScoreTexts();
             gameObject.SetActive(true);
             ViewOpened?.Invoke(this);
+        }
+
+        private void SetScoreTexts()
+        {
+            _currentScoreText.text = $"Current Score : {PlayerScoreBehaviour.CurrentScore}";
+            _highScoreText.text = $"Current Score : {GameController.Instance.PrefsController.GetHighScore()}";
         }
 
         public void Close()

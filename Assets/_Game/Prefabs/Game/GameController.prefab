@@ -44,5 +44,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _viewController: {fileID: 0}
-  _playerController: {fileID: 0}
+  _playerController: {fileID: 1833342105422160143, guid: 6fb4ca77ba65a31418165025341a28e1,
+    type: 3}
   _asteroidsController: {fileID: 0}
+  _soundController: {fileID: 0}
+  _particleController: {fileID: 0}
+  _gameConfig: {fileID: 11400000, guid: 8131743288fda0141b9a9be0785c8eb8, type: 2}
+  _gameConfigMono: {fileID: 0}
+  _mainInitStep: {fileID: 11400000, guid: 3478a8b12fff10b40806ace82a7c5ca3, type: 2}

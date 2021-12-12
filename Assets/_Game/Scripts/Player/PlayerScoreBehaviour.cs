@@ -12,20 +12,24 @@ namespace _Game.Scripts.Player
         public void Init()
         {
             ResetScore();
+            SubscribeToEvents();
+        }
+
+        private void SubscribeToEvents()
+        {
+            GameController.Instance.StateChanged += OnStateChanged;
+            AsteroidBehaviour.AsteroidDestroyed += OnAsteroidDestroyed;
+        }
+        
+        private void UnSubscribeFromEvents()
+        {
             GameController.Instance.StateChanged += OnStateChanged;
             AsteroidBehaviour.AsteroidDestroyed += OnAsteroidDestroyed;
         }
 
-        private static void ResetScore()
-        {
-            _currentScore = 0;
-        }
+        private static void ResetScore() => _currentScore = 0;
 
-        public void Dispose()
-        {
-            GameController.Instance.StateChanged -= OnStateChanged;
-            AsteroidBehaviour.AsteroidDestroyed -= OnAsteroidDestroyed;
-        }
+        public void Dispose() => UnSubscribeFromEvents();
 
         private void OnStateChanged(GameState newState)
         {
@@ -33,7 +37,7 @@ namespace _Game.Scripts.Player
                 ResetScore();
         }
 
-        private void OnAsteroidDestroyed(int asteroidScore)
+        private void OnAsteroidDestroyed(int asteroidScore, Vector2 damagePosition)
         {
             _currentScore += asteroidScore;
             if(_currentScore > GameController.Instance.PrefsController.GetHighScore())

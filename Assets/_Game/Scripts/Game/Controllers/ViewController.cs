@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using _Game.Scripts.Game.Levels;
 using _Game.Scripts.Game.Views;
 using UnityEngine;
 
@@ -32,18 +31,36 @@ namespace _Game.Scripts.Game.Controllers
 
         public void Init()
         {
-            LevelFailView = _levelFailView.GetComponent<IView>();
-            LevelCompleteView = _levelCompleteView.GetComponent<IView>();
-            GameplayView = _gameplayScreenGameObject.GetComponent<IView>();
-            MenuView = _menuView.GetComponent<IView>();
-            ((MenuView) MenuView).StartClicked += OnStartClicked;
-            ((LevelFailView) LevelFailView).RestartClicked += OnRetryClicked;
-            ((LevelFailView) LevelFailView).ExitClicked += OnExitClicked;
-            GameController.Instance.StateChanged += OnStateChanged;
+            GetAllViews();
+            SubscribeViewEvents();
             InitializeViews();
             _isInitialized = true;
             Initialized?.Invoke();
             Debug.Log($"{LOGS.HEAD_LOG} {this} Initialized");
+        }
+
+        private void SubscribeViewEvents()
+        {
+            ((MenuView) MenuView).StartClicked += OnStartClicked;
+            ((LevelFailView) LevelFailView).RestartClicked += OnRetryClicked;
+            ((LevelFailView) LevelFailView).ExitClicked += OnExitClicked;
+            GameController.Instance.StateChanged += OnStateChanged;
+        }
+        
+        private void UnSubscribeViewEvents()
+        {
+            ((MenuView) MenuView).StartClicked -= OnStartClicked;
+            ((LevelFailView) LevelFailView).RestartClicked -= OnRetryClicked;
+            ((LevelFailView) LevelFailView).ExitClicked -= OnExitClicked;
+            GameController.Instance.StateChanged -= OnStateChanged;
+        }
+
+        private void GetAllViews()
+        {
+            LevelFailView = _levelFailView.GetComponent<IView>();
+            LevelCompleteView = _levelCompleteView.GetComponent<IView>();
+            GameplayView = _gameplayScreenGameObject.GetComponent<IView>();
+            MenuView = _menuView.GetComponent<IView>();
         }
 
         private void OnExitClicked() => ExitClicked?.Invoke();
@@ -90,6 +107,7 @@ namespace _Game.Scripts.Game.Controllers
 
         public void Dispose()
         {
+            UnSubscribeViewEvents();
             _isInitialized = false;
             Disposed?.Invoke();
             Debug.Log($"{LOGS.HEAD_LOG} {this} Disposed");

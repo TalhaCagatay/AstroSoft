@@ -1,4 +1,6 @@
-﻿namespace _Game.Scripts.Game.Controllers
+﻿using _Game.Scripts.Configs.GameConfig;
+
+namespace _Game.Scripts.Game.Controllers
 {
     public interface IGameController : IController
     {
@@ -7,5 +9,9 @@
         IPrefsController PrefsController { get; set; }
         IViewController ViewController { get; }
         IAsteroidController AsteroidController { get; }
+        ISoundController SoundController { get; }
+        IParticleController ParticleController { get; }
+        GameConfig GameConfig { get; }
+        GameConfigMono GameConfigMono { get; }
     }
 }
