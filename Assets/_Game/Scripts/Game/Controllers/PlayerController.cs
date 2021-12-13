@@ -72,9 +72,17 @@ namespace _Game.Scripts.Game.Controllers
 
         private void ResetShipVelocity() => _playerMovementBehaviour.ResetShipVelocity();
 
-        private void ResetShipRotation() => _transformToMove.rotation = Quaternion.identity;
+        private void ResetShipRotation()
+        {
+            transform.rotation = Quaternion.identity;
+            _transformToMove.rotation = Quaternion.identity;
+        }
 
-        private void ResetShipPosition() => _transformToMove.localPosition = _initialShipPosition;
+        private void ResetShipPosition()
+        {
+            transform.position = Vector2.zero;
+            _transformToMove.localPosition = _initialShipPosition;
+        }
 
         private void EnableShip()
         {
