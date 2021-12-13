@@ -15,8 +15,19 @@ namespace _Game.Scripts.Player.Shooting.Bullet
             SubscribeToEvents();
         }
 
-        private void SubscribeToEvents() => GameController.Instance.StateChanged += OnStateChanged;
-        private void UnSubscribeFromEvents() => GameController.Instance.StateChanged -= OnStateChanged;
+        private void SubscribeToEvents()
+        {
+            GameController.Instance.PlayerController.PlayerLostLive += OnPlayerLostLive;
+            GameController.Instance.StateChanged += OnStateChanged;
+        }
+
+        private void OnPlayerLostLive(int obj) => DespawnBullet();
+
+        private void UnSubscribeFromEvents()
+        {
+            GameController.Instance.PlayerController.PlayerLostLive -= OnPlayerLostLive;
+            GameController.Instance.StateChanged -= OnStateChanged;
+        }
 
         private void InitializeBulletMovement(BulletConfig bulletConfig) => _bulletMovementBehaviour.Init(bulletConfig);
 
