@@ -32,7 +32,6 @@ namespace _Game.Scripts.Game.Controllers
                 return;
             }
             
-            DontDestroyOnLoad(gameObject);
             Init();
         }
 
