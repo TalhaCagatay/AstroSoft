@@ -10,7 +10,8 @@ namespace _Game.Scripts.Player
         private int _health;
         public int Health => _health;
 
-        public void Init(int health) => _health = health;
+        public void Init(int health) => SetMaxHealth(health);
+        public void SetMaxHealth(int health) => _health = health;
         public void Dispose(){}
 
         public void ApplyDamage(Vector2 damagePoint)

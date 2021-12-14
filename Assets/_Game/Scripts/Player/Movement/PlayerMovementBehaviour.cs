@@ -18,8 +18,10 @@ namespace _Game.Scripts.Player.Movement
         public MovementConfig MovementConfig => _inertiaMovementConfig;
         public float ThrustSpeed => MovementConfig.ThrustSpeed;
         public float RotationSpeed => MovementConfig.RotationSpeed;
-        
-        public void Init()
+
+        public void Init() => ResetShipProperties();
+
+        public void ResetShipProperties()
         {
             PositionPlayerAtCenter();
             GetTransformToHandle();

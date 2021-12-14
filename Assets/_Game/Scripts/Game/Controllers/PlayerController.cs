@@ -121,15 +121,19 @@ namespace _Game.Scripts.Game.Controllers
             if (newState == GameState.Play)
             {
                 EnableShip();
-                InitializePlayerDependencies();
+                ResetPlayerMovementBehaviour();
+                ResetPlayerDamageableBehaviour();
             }
-            if(newState == GameState.Completed || newState == GameState.Failed)
-                DisposePlayerDependencies();
         }
+
+        private void ResetPlayerDamageableBehaviour() => _playerDamageableBehaviour.SetMaxHealth(GameController.Instance.GameConfig.ShipMaxLiveCount);
+
+        private void ResetPlayerMovementBehaviour() => _playerMovementBehaviour.ResetShipProperties();
 
         public void Dispose()
         {
             HandleUnSubscriptions();
+            DisposePlayerDependencies();
             LeanPool.Despawn(gameObject);
             _isInitialized = false;
             Disposed?.Invoke();

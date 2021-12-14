@@ -23,8 +23,8 @@ namespace _Game.Scripts.Player
         
         private void UnSubscribeFromEvents()
         {
-            GameController.Instance.StateChanged += OnStateChanged;
-            AsteroidBehaviour.AsteroidDestroyed += OnAsteroidDestroyed;
+            GameController.Instance.StateChanged -= OnStateChanged;
+            AsteroidBehaviour.AsteroidDestroyed -= OnAsteroidDestroyed;
         }
 
         private static void ResetScore() => _currentScore = 0;
